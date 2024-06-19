@@ -1,6 +1,6 @@
 const searchQuery = new URL(window.location.href).searchParams.get("q");
 
-function showNotionResults(results) {
+function showNotionResults(results, propertyName) {
   const resultsContainer = document.createElement("div");
   resultsContainer.className = "notion-search-results";
 
@@ -12,7 +12,7 @@ function showNotionResults(results) {
             .map(
               (result) => `
       <a href="${result.url}" target="_blank">
-        ${result.properties["名前"].title[0].plain_text}
+        ${result.properties[propertyName].title[0].plain_text}
       </a><br />
     `
             )
@@ -39,8 +39,9 @@ function showNotionResults(results) {
 }
 
 if (searchQuery) {
-  chrome.storage.sync.get("notionApiToken", (data) => {
+  chrome.storage.sync.get(["notionApiToken", "notionPropertyName"], (data) => {
     const NOTION_API_TOKEN = data.notionApiToken;
+    const NOTION_PROPERTY_NAME = data.notionPropertyName || "名前";
     if (NOTION_API_TOKEN) {
       chrome.runtime.sendMessage(
         {
@@ -60,7 +61,7 @@ if (searchQuery) {
             console.error(response.error);
           } else {
             console.log(response.data);
-            showNotionResults(response.data.results);
+            showNotionResults(response.data.results, NOTION_PROPERTY_NAME);
           }
         }
       );
