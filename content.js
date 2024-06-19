@@ -1,6 +1,6 @@
 const searchQuery = new URL(window.location.href).searchParams.get("q");
 
-function showNotionResults(results, propertyName) {
+function showNotionResults(results, titlePropertyId) {
   const resultsContainer = document.createElement("div");
   resultsContainer.className = "notion-search-results";
 
@@ -12,8 +12,11 @@ function showNotionResults(results, propertyName) {
             .map(
               (result) => `
       <a href="${result.url}" target="_blank">
-        ${result.properties[propertyName].title[0].plain_text}
-      </a><br />
+        ${
+          result.properties[titlePropertyId]?.title[0]?.plain_text ||
+          "No Title Found"
+        }
+      </a> / 
     `
             )
             .join("")
@@ -38,10 +41,18 @@ function showNotionResults(results, propertyName) {
   }
 }
 
+function findTitlePropertyId(properties) {
+  for (const propertyId in properties) {
+    if (properties[propertyId].type === "title") {
+      return propertyId;
+    }
+  }
+  return null;
+}
+
 if (searchQuery) {
-  chrome.storage.sync.get(["notionApiToken", "notionPropertyName"], (data) => {
+  chrome.storage.sync.get(["notionApiToken"], (data) => {
     const NOTION_API_TOKEN = data.notionApiToken;
-    const NOTION_PROPERTY_NAME = data.notionPropertyName || "名前";
     if (NOTION_API_TOKEN) {
       chrome.runtime.sendMessage(
         {
@@ -60,8 +71,20 @@ if (searchQuery) {
           if (response.error) {
             console.error(response.error);
           } else {
-            console.log(response.data);
-            showNotionResults(response.data.results, NOTION_PROPERTY_NAME);
+            const results = response.data.results;
+            if (results.length > 0) {
+              // Assuming all results have the same properties structure, get the title property ID from the first result
+              const titlePropertyId = findTitlePropertyId(
+                results[0].properties
+              );
+              if (titlePropertyId) {
+                showNotionResults(results, titlePropertyId);
+              } else {
+                console.error("Title property not found in the results.");
+              }
+            } else {
+              showNotionResults(results, null);
+            }
           }
         }
       );
