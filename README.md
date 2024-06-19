@@ -2,14 +2,14 @@
 
 ![icon](icon.png)
 
-Google 検索ページの検索結果の横に同じクエリでの Notion での検索結果とそのリンクを表示する Chrome 拡張機能です。
+Notion Enhancer for Google Search is a Chrome extension that displays Notion search results alongside Google search results.
+This allows you to efficiently view both Google search results and Notion search results together.
 
 ![screenshot](screenshot.png)
 
 ## Install
 
-拡張機能インストール後、アイコンを右クリックしオプションを開き、 Notion API Token を設定してください。
+- After installing the extension, click the icon to open the options and set the Notion API Token.
+- To get the Notion API Token, create an integration in Notion API, connect it to the database you want to search, and then set the token.
 
 ![settings](settings.png)
-
-- Notion API Token: Notion API のインテグレーションを作成し、検索したいDBにコネクトを設定したのち Token を設定してください。
