@@ -5,7 +5,7 @@
 Notion Enhancer for Google Search is a Chrome extension that displays Notion search results alongside Google search results.
 This allows you to efficiently view both Google search results and Notion search results together.
 
-日本語版README: [README_ja.md](README_ja.md)
+日本語版README: [README_JA.md](README_JA.md)
 
 ![screenshot](screenshot.png)
 
