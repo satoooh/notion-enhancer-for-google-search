@@ -9,6 +9,8 @@ Notion Enhancer for Google Search は、Google 検索ページの検索結果の
 
 ## Install
 
+![notion-enhancer-for-google-search-setup.mp4](notion-enhancer-for-google-search-setup.mp4)
+
 - 拡張機能インストール後、アイコンをクリックしオプションを開き、 Notion API Token を設定してください。
 - Notion API Token は、Notion API のインテグレーションを作成し、検索したいDBにコネクトを設定したのち Token を設定してください。
 
