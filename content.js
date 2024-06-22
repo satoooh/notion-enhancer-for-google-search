@@ -1,6 +1,6 @@
 const searchQuery = new URL(window.location.href).searchParams.get("q");
 
-function showNotionResults(results, titlePropertyId) {
+function showNotionResults(results) {
   const resultsContainer = document.createElement("div");
   resultsContainer.className = "notion-search-results";
 
@@ -9,16 +9,18 @@ function showNotionResults(results, titlePropertyId) {
     ${
       results.length
         ? results
-            .map(
-              (result) => `
-      <a href="${result.url}" target="_blank">
-        ${
-          result.properties[titlePropertyId]?.title[0]?.plain_text ||
-          "No Title Found"
-        }
-      </a> / 
-    `
-            )
+            .map((result) => {
+              const titleProperty = Object.values(result.properties).find(
+                (property) => property.type === "title"
+              );
+              const title =
+                titleProperty?.title?.[0]?.plain_text || "No Title Found";
+              return `
+                  <a href="${result.url}" target="_blank">
+                    ${title}
+                  </a> / 
+                `;
+            })
             .join("")
         : "<p>No results found</p>"
     }
@@ -39,15 +41,6 @@ function showNotionResults(results, titlePropertyId) {
       "Unable to find the target element to append the search results."
     );
   }
-}
-
-function findTitlePropertyId(properties) {
-  for (const propertyId in properties) {
-    if (properties[propertyId].type === "title") {
-      return propertyId;
-    }
-  }
-  return null;
 }
 
 if (searchQuery) {
@@ -73,15 +66,7 @@ if (searchQuery) {
           } else {
             const results = response.data.results;
             if (results.length > 0) {
-              // Assuming all results have the same properties structure, get the title property ID from the first result
-              const titlePropertyId = findTitlePropertyId(
-                results[0].properties
-              );
-              if (titlePropertyId) {
-                showNotionResults(results, titlePropertyId);
-              } else {
-                console.error("Title property not found in the results.");
-              }
+              showNotionResults(results);
             } else {
               showNotionResults(results, null);
             }
